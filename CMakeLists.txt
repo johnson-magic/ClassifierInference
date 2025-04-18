@@ -24,7 +24,7 @@ find_package(OpenCV REQUIRED)
 # 设置可执行文件名
 set(SOURCES
     src/main.cpp
-    src/inferencer.cpp
+    src/classifier_inferencer.cpp
     src/utils.cpp
 )
 add_executable(${PROJECT_NAME} ${SOURCES}) # main.cpp 为你的源文件名称

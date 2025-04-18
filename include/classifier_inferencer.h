@@ -47,12 +47,13 @@ class ClassifierInferencer {
 
         std::string image_path_;
         std::string model_path_;
+	std::vector<std::string> labels_;
         
-        cv::Mat image_;
+	cv::Mat image_;
         // Ort::Value input_tensor_;
         std::vector<Ort::Value> ort_outputs_;
         
-        size_t numInputNodes_;  now, only support 1
+        size_t numInputNodes_;  // usually, it is 1
         size_t numOutputNodes_;
         std::vector<std::string> input_node_names_;
 	    std::vector<std::string> output_node_names_;
