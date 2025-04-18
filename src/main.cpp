@@ -40,13 +40,13 @@ int main(int argc, char** argv){
 	std::string model_path = argv[1];
 	std::string image_path = argv[2];
 	std::string result_path = argv[3];
-	std::string vis_path = argv[4];
-
+    
 	/*step1: 构造inference对象*/
 	ClassifierInferencer classifier(model_path, image_path);  // 理论上，image_path放到构造函数中，总是怪怪的
     
     classifier.GetInputInfo();
 	classifier.GetOutputInfo();
+
 	
 	std::filesystem::file_time_type lastCheckedTime = std::filesystem::file_time_type();
 	
