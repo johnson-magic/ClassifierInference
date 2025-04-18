@@ -24,11 +24,11 @@ void ClassifierInferencer::GetInputInfo(){
 }
 
 size_t ClassifierInferencer::GetSessionInputCount(){
-    return GetInputCount();
+    return session_->GetInputCount();
 }
 
-size_t GetSessionOutputCount(){
-    return GetOutputCount();
+size_t ClassifierInferencer::GetSessionOutputCount(){
+    return session_->GetOutputCount();
 }
 
 void ClassifierInferencer::GetOutputInfo(){
@@ -107,11 +107,11 @@ void ClassifierInferencer::Inference(){
 	const std::array<const char*, 1> inputNames = { input_node_names_[0].c_str() };  // std::array用于fixed size array
 	const std::array<const char*, 1> outNames = { output_node_names_[0].c_str() };
    
-    cv::Mat blob;
-	cv::dnn::blobFromImage(image_, blob, 1 / 255.0, cv::Size(input_w_, input_h_), cv::Scalar(0, 0, 0), true, false);  // swapRB = true, crop = false,
+    	cv::Mat blob;
+	cv::dnn::blobFromImage(image_, blob, 1 / 255.0, cv::Size(input_w_[0], input_h_[0]), cv::Scalar(0, 0, 0), true, false);  // swapRB = true, crop = false,
     
-	size_t tpixels = input_h_ * input_w_ * 3 * 1;
-	std::array<int64_t, 4> input_shape_info{ 1, 3, input_h_, input_w_};
+	size_t tpixels = input_h_[0] * input_w_[0] * 3 * 1;
+	std::array<int64_t, 4> input_shape_info{ 1, 3, input_h_[0], input_w_[0]};
 
     
 	auto allocator_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
@@ -141,7 +141,7 @@ void ClassifierInferencer::PostProcess(){
     float max_prob = *(pdata + prediction);
     int begin_id = 1;
     for(int i = begin_id; i<output_class_num_[0]; i++){
-        if(*(pdata + i) > cur_max_prob){
+        if(*(pdata + i) > max_prob){
             max_prob = *(pdata + i);
             prediction = i;
         }
@@ -163,8 +163,8 @@ cv::Mat ClassifierInferencer::pad_and_resize(const cv::Mat img){
     
     
     // 计算缩放比例
-    scale_ = std::min(static_cast<double>(input_h_) / h_img, static_cast<double>(input_w_) / w_img);
-    scale_ = std::min(scale_, 1);  //如果原始图片的宽和高都不超过网络的宽和高，则将scale设置为1，表示事实上不进行resize.
+    scale_ = std::min(static_cast<double>(input_h_[0]) / h_img, static_cast<double>(input_w_[0]) / w_img);
+    scale_ = std::min(static_cast<double>(scale_), 1.0);  //如果原始图片的宽和高都不超过网络的宽和高，则将scale设置为1，表示事实上不进行resize.
     // 计算新的宽度和高度
     int w_resized = static_cast<int>(std::round(scale_ * w_img));
     int h_resized = static_cast<int>(std::round(scale_ * h_img));
@@ -173,8 +173,8 @@ cv::Mat ClassifierInferencer::pad_and_resize(const cv::Mat img){
     cv::resize(img, img_resized, cv::Size(w_resized, h_resized), 0, 0, cv::INTER_LINEAR);
 
     // 计算边框宽度和高度
-    int dw = input_w_ - w_resized;
-    int dh = input_h_ - h_resized;
+    int dw = input_w_[0] - w_resized;
+    int dh = input_h_[0] - h_resized;
 
     // 分配边框宽度（上下左右）
     top_ = dh / 2;
@@ -199,6 +199,4 @@ void ClassifierInferencer::Release(){
 	session_->release();
 }
 
-std::vector<RotatedObj> ClassifierInferencer::Get_remain_rotated_objects(){
-    return remain_rotated_objects_;
-}
+

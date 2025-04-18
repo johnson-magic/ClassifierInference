@@ -111,8 +111,8 @@ int main(int argc, char** argv){
             
             for(int i=0; i< iter; i++){
             	std::pair<std::vector<int>, std::vector<float>> res = classifier.GetRes();
-                std::vector<int> classes = res.first();
-                std::vector<float> scores = res.second();
+                std::vector<int> classes = res.first;
+                std::vector<float> scores = res.second;
                 for(int j=0; j<classes.size(); j++){
                     std::cout<<"class: "<<classes[j]<<"scores: "<<scores[j]<<std::endl;
                 }
