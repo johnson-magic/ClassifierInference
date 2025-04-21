@@ -27,6 +27,11 @@ set(SOURCES
     src/classifier_inferencer.cpp
     src/utils.cpp
 )
+set(SOURCES_LIBRARY
+    src/classifier_inferencer.cpp
+    src/utils.cpp
+)
+add_library(${PROJECT_NAME}_lib ${SOURCES_LIBRARY})
 add_executable(${PROJECT_NAME} ${SOURCES}) # main.cpp 为你的源文件名称
 include_directories("./include")
 
