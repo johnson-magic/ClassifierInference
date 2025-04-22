@@ -54,7 +54,8 @@ void ClassifierInferencer::GetOutputInfo(){
     } 
 }
 
-void ClassifierInferencer::PreProcess(){
+void ClassifierInferencer::PreProcess(std::string& image_path){
+    image_path_ = return_image_path(image_path);
 	image_ = cv::imread(image_path_);
 	if (image_.empty()) {
 		std::cerr << "Failed to read the image!" << std::endl;
