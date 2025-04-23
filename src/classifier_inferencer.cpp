@@ -64,6 +64,15 @@ void ClassifierInferencer::PreProcess(std::string& image_path){
 	image_ = pad_and_resize(image_);
 }
 
+void ClassifierInferencer::PreProcess(cv::Mat& image){
+	image_ = image;
+	if (image_.empty()) {
+		std::cerr << "Failed to read the image!" << std::endl;
+		return;
+	}
+	image_ = pad_and_resize(image_);
+}
+
 void ClassifierInferencer::SaveOrtValueAsImage(Ort::Value& value, const std::string& filename) {
     // 确保值是张量
     if (!value.IsTensor()) {
