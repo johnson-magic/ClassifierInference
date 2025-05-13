@@ -146,6 +146,8 @@ void ClassifierInferencer::Inference(){
 
 void ClassifierInferencer::PostProcess(){
 	// output data
+    predictions_.clear();
+    scores_.clear();
 	const float* pdata = ort_outputs_[0].GetTensorMutableData<float>();
 	int prediction = 0;
     float max_prob = *(pdata + prediction);
