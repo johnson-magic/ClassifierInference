@@ -2,6 +2,7 @@ build/
 *.onnx
 *.pt
 *.pth
+.vscode
 
 # Prerequisites
 *.d
