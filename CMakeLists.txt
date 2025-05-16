@@ -36,11 +36,10 @@ add_executable(${PROJECT_NAME} ${SOURCES}) # main.cpp 为你的源文件名称
 include_directories("./include")
 
 # 链接 OpenCV 库和 ONNX Runtime 库
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} "C:/Users/24601/Desktop/fabu/software/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/lib/onnxruntime.lib" "C:/Users/24601/Desktop/fabu/software/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/lib/onnxruntime_providers_shared.lib")
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} "D:/software_path/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/lib/onnxruntime.lib" "D:/software_path/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/lib/onnxruntime_providers_shared.lib")
 # 包含OpenCV头文件和ONNX Runtime头文件
 include_directories(${OpenCV_INCLUDE_DIRS})
-include_directories("C:/Users/24601/Desktop/fabu/software/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/include")
-
+include_directories("D:/software_path/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/include")
 # 设置 C++ 标准
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 17
