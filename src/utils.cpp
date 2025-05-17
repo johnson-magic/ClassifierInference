@@ -1,51 +1,27 @@
 #include "utils.h"
 
-void drawRotatedRect(cv::Mat& image, const cv::RotatedRect& rotatedRect) {
-
-    cv::Point2f vertices[4];
-	
-
-
-    rotatedRect.points(vertices);
-
-   
-    for(int i = 0; i < 4; ++i) {
-		cv::line(image, vertices[i], vertices[(i + 1) % 4], cv::Scalar(0, 255, 0), 2);
-	}
-      
-        
-}
-
-
-
-void printRotatedRect(const cv::RotatedRect& rotatedRect) {
-    cv::Point2f center = rotatedRect.center; 
-    cv::Size2f size = rotatedRect.size;       
-    float angle = rotatedRect.angle;         
-
-    std::cout << "RotatedRect:" << std::endl;
-    std::cout << "Center: (" << center.x << ", " << center.y << ")" << std::endl;
-    std::cout << "Size: (" << size.width << ", " << size.height << ")" << std::endl;
-    std::cout << "Angle: " << angle << " degrees" << std::endl;
-}
-
-
-bool hasImageUpdated(const std::string& image_path, std::filesystem::file_time_type& lastCheckedTime) {
+bool hasImageUpdated(const std::string& img_path, cv::Scalar &pre_pixel_sum) {
     
-    if (!std::filesystem::exists(image_path)) {
-        std::cout << "file does not exists: " << image_path << std::endl;
+    std::ifstream test_open(img_path);
+    if(test_open.is_open()){
+        cv::Mat img_temp = cv::imread(img_path);
+        test_open.close();
+        if (img_temp.empty()) {
+	    	std::cerr << "Failed to read the image!" << std::endl;
+            return false;
+        }
+        cv::Scalar cur_pixel_sum=cv::sum(img_temp);
+        if(pre_pixel_sum == cur_pixel_sum){
+            return false;
+        }
+        else{
+            pre_pixel_sum = cur_pixel_sum;
+            return true;
+        }
+    }
+    else{
         return false;
     }
-
-
-    std::filesystem::file_time_type curWriteTime = std::filesystem::last_write_time(image_path);
-    
-    if (curWriteTime != lastCheckedTime) {
-        lastCheckedTime = curWriteTime;
-        return true;
-    }
-    
-    return false;
 }
 
 long long GetSecondsInterval(SYSTEMTIME start, SYSTEMTIME end) {
@@ -102,52 +78,6 @@ void SaveOrtValueToTextFile(Ort::Value& ortValue, const std::string& filename) {
     // 关闭文件
     outFile.close();
 }
-
-// 分离文件名和扩展名的函数
-std::pair<std::string, std::string> splitext(const std::string& filename) {
-    size_t lastDot = filename.find_last_of(".");
-    if (lastDot == std::string::npos) {
-        // 找不到扩展名，返回原文件名和空字符串
-        return {filename, ""};
-    } else {
-        // 分离文件名和扩展名
-        return {filename.substr(0, lastDot), filename.substr(lastDot)};
-    }
-}
-
-void SaveRotatedObjsToTextFile(std::vector<RotatedObj>& rotated_objs, const std::string& filename){
-
-    auto [name, ext] = splitext(filename);
-
-    for(auto rotated_obj : rotated_objs){
-        std::string cur_filename = name + "_" + std::to_string(rotated_obj.class_index) + ".txt";
-
-        // 打开文件
-        std::ofstream outFile(cur_filename);
-        if (!outFile) {
-            std::cerr << "无法打开文件 " << filename << std::endl;
-            return;
-        }
-
-        outFile << rotated_obj.class_index << std::endl;
-        outFile << rotated_obj.score << std::endl;
-
-        cv::Point2f vertices[4];
-        rotated_obj.rotated_rect.points(vertices);
-        for(auto vertice : vertices){
-            outFile << vertice.x << std::endl;
-            outFile << vertice.y << std::endl;
-        }
-
-        // 关闭文件
-        outFile.close();
-    }
-
-
-
-
-}
-
 
 void readFromBinaryFile(const std::string& filename, const TimeLimit& timelimit) {
     // 读取二进制文件
