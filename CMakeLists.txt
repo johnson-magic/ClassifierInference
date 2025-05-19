@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 # 设置项目名称
-project(ClassifierInference)
-set(CMAKE_BUILD_TYPE Release)
+project(classifier_demo)
 
+set(CMAKE_BUILD_TYPE Release)
 option(SPEED_TEST "SPEED TEST" OFF)
 option(CONFORMANCE_TEST "conformance test" OFF)
 option(ENCRYPT "encrypt" OFF)
@@ -17,33 +17,27 @@ if(ENCRYPT)
     add_definitions(-DENCRYPT)
 endif()
 
-# 查找 OpenCV 包
-
-find_package(OpenCV REQUIRED)
-
 # 设置可执行文件名
-set(SOURCES
-    src/main.cpp
-    src/classifier_inferencer.cpp
-    src/utils.cpp
+set(CLASSIFIER_DEMO_SOURCES
+    demo/main.cpp
+    demo/utils/src/utils.cpp
 )
-set(SOURCES_LIBRARY
-    src/classifier_inferencer.cpp
-    src/utils.cpp
-)
-add_library(${PROJECT_NAME}_lib src/classifier_inferencer.cpp src/utils.cpp)
-add_executable(${PROJECT_NAME} ${SOURCES}) # main.cpp 为你的源文件名称
-include_directories("./include")
 
-# 链接 OpenCV 库和 ONNX Runtime 库
-target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} "D:/software_path/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/lib/onnxruntime.lib" "D:/software_path/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/lib/onnxruntime_providers_shared.lib")
-# 包含OpenCV头文件和ONNX Runtime头文件
+add_subdirectory("./classifier_inference")
+add_executable(${PROJECT_NAME} ${CLASSIFIER_DEMO_SOURCES})
+include_directories("./demo/utils/include")
+include_directories("./classifier_inference/include")
+find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories("D:/software_path/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/include")
+
+target_link_libraries(${PROJECT_NAME}
+                      classifier_inference
+                      ${OpenCV_LIBS}
+                      "D:/software_path/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/lib/onnxruntime.lib"
+                      "D:/software_path/onnxruntime-win-x64-1.15.1/onnxruntime-win-x64-1.15.1/lib/onnxruntime_providers_shared.lib")
+
 # 设置 C++ 标准
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED YES)
-set_target_properties(${PROJECT_NAME}_lib PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED YES)  # 这个是必须的，否则会报错
