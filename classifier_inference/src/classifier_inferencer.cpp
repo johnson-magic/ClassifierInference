@@ -186,9 +186,9 @@ cv::Mat ClassifierInferencer::pad_and_resize(const cv::Mat &img){
     int dh = net_h_[0] - h_resized;
 
     // 分配边框宽度（上下左右）
-    int top = dh / 2;
+    int top = std::ceil(dh / 2.0);
     int bottom = dh - top;
-    int left = dw / 2;
+    int left = std::ceil(dw / 2.0);
     int right = dw - left;
 
     // 添加边框
