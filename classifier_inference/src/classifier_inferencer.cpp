@@ -173,7 +173,7 @@ cv::Mat ClassifierInferencer::pad_and_resize(const cv::Mat &img){
     
     // 计算缩放比例
     float scale = std::min(static_cast<double>(net_h_[0]) / h_img, static_cast<double>(net_w_[0]) / w_img);
-    scale = std::min(static_cast<double>(scale), 1.0);  //如果原始图片的宽和高都不超过网络的宽和高，则将scale设置为1，表示事实上不进行resize.
+    //scale = std::min(static_cast<double>(scale), 1.0);  //如果原始图片的宽和高都不超过网络的宽和高，则将scale设置为1，表示事实上不进行resize.
     // 计算新的宽度和高度
     int w_resized = static_cast<int>(std::round(scale * w_img));
     int h_resized = static_cast<int>(std::round(scale * h_img));
