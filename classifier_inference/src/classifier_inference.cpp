@@ -1,4 +1,4 @@
-#include "classifier_inferencer.h"
+#include "classifier_inference.h"
 
 void ClassifierInferencer::Init(const std::string &model_path){
     static Ort::Env env(ORT_LOGGING_LEVEL_WARNING, "default");

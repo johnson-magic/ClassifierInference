@@ -6,5 +6,6 @@ cd ClassifierInference
 cmake --preset conan-default
 cmake -B ./build -DCMAKE_BUILD_TYPE=Release
 cmake --build ./build/ --config Release
+conan create .
 ```
 
